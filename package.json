@@ -1,12 +1,27 @@
 {
   "name": "twitter-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "https://github.com/ForoutanR/twitter-clone",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ForoutanR/twitter-clone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ForoutanR/twitter-clone/issues"
+  },
+  "homepage": "https://github.com/ForoutanR/twitter-clone#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "joi": "^17.12.2",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.1"
+  }
 }
