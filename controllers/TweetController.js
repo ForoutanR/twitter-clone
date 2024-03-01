@@ -34,3 +34,23 @@ exports.postTweet = async (req, res) => {
     }
 };
 
+exports.getTweets = async (req, res) => {
+    try {
+        // Sample SQL query to fetch all tweets, consider adding JOIN to fetch user details
+        const query = `
+            SELECT t.TweetID, t.UserID, u.Username, t.Content, t.ImageURL, t.ParentTweetID, t.CreationDate
+            FROM Tweets t
+            JOIN Users u ON t.UserID = u.UserID
+            ORDER BY t.CreationDate DESC;
+        `;
+        const result = await sql.query(query);
+
+        // Respond with the fetched tweets
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching tweets:', error);
+        res.status(500).json({ message: 'Failed to fetch tweets' });
+    }
+};
+
+

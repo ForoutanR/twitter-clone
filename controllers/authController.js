@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-        const newUser = await sql`INSERT INTO users (username, email, password) VALUES (${username}, ${email}, ${hashedPassword}) RETURNING *`;
+        const newUser = await sql`INSERT INTO Users (username, email, PasswordHash) VALUES (${username}, ${email}, ${hashedPassword}) RETURNING *`;
         res.status(201).json({ user: newUser[0] });
     } catch (error) {
         console.error(error);
@@ -40,9 +40,9 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const user = await sql`SELECT * FROM users WHERE email = ${email}`;
+        const user = await sql`SELECT * FROM Users WHERE email = ${email}`;
         if (user.length > 0) {
-            const isValid = await bcrypt.compare(password, user[0].password);
+            const isValid = await bcrypt.compare(password, user[0].passwordhash);
             if (isValid) {
                 const token = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 res.json({ token });
