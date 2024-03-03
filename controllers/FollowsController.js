@@ -1,7 +1,6 @@
 const Joi = require('joi');
-const { sql } = require('../models/db'); // Adjust the path as necessary
+const { sql } = require('../models/db');
 
-// Joi schema for validating follow input
 const followSchema = Joi.object({
     followerId: Joi.number().required(),
     followingId: Joi.number().required(),
@@ -14,7 +13,6 @@ exports.followUser = async (req, res) => {
 
     const { followerId, followingId } = value;
 
-    // Prevent users from following themselves
     if (followerId === followingId) {
         return res.status(400).json({ message: "Users cannot follow themselves" });
     }

@@ -1,16 +1,14 @@
 const Joi = require('joi');
 const {sql} = require("../models/db");
 
-// Updated Joi validation schema for tweets
 const tweetSchema = Joi.object({
     userId: Joi.number().required(),
     content: Joi.string().max(280).required(),
     imageUrl: Joi.string().uri().allow(null, '').optional(),
-    parentTweetId: Joi.number().allow(null).optional() // Allow for null if it's not a reply
+    parentTweetId: Joi.number().allow(null).optional()
 });
 
 exports.postTweet = async (req, res) => {
-    // Validate the request data against the schema
     const { error, value } = tweetSchema.validate(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message });
@@ -36,7 +34,6 @@ exports.postTweet = async (req, res) => {
 
 exports.getTweets = async (req, res) => {
     try {
-        // Sample SQL query to fetch all tweets, consider adding JOIN to fetch user details
         const query = `
             SELECT t.TweetID, t.UserID, u.Username, t.Content, t.ImageURL, t.ParentTweetID, t.CreationDate
             FROM Tweets t
@@ -45,12 +42,35 @@ exports.getTweets = async (req, res) => {
         `;
         const result = await sql.query(query);
 
-        // Respond with the fetched tweets
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching tweets:', error);
         res.status(500).json({ message: 'Failed to fetch tweets' });
     }
 };
+exports.getTweetById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const query = `
+            SELECT t.TweetID, t.UserID, u.Username, t.Content, t.ImageURL, t.ParentTweetID, t.CreationDate
+            FROM Tweets t
+            JOIN Users u ON t.UserID = u.UserID
+            WHERE t.TweetID = $1
+            ORDER BY t.CreationDate DESC;
+        `;
+        const result = await sql.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Tweet not found' });
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error fetching tweet:', error);
+        res.status(500).json({ message: 'Failed to fetch tweet' });
+    }
+};
+
 
 

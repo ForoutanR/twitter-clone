@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sql = require('../models/db');
 
-// Validation schemas
 const registerSchema = Joi.object({
     username: Joi.string().alphanum().min(3).max(255).required(),
     email: Joi.string().email().required(),
@@ -16,7 +15,6 @@ const loginSchema = Joi.object({
 });
 
 exports.register = async (req, res) => {
-    // Validate request data
     const { error } = registerSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
 
@@ -33,7 +31,6 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    // Validate request data
     const { error } = loginSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.details[0].message });
 
